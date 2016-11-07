@@ -73,9 +73,16 @@ void output_vector(std::vector<std::string> & v){
 }
 
 void output_vector(std::vector<course> & v){
-		for (int i = 0; i < v.size(); i++){
+	for (int i = 0; i < v.size(); i++){
 			cout << v[i].output_name() << "\n";
-		}
+	}
+}
+
+//takes current element, swaps to back
+void swap_to_back(std::vector<course>& v,const int &x){
+	course temp = v[x];
+	v[x] = v[v.size()-1];
+	v[v.size()-1] = temp;
 }
 
 int main(int argc, char *argv[]){
@@ -168,16 +175,23 @@ int main(int argc, char *argv[]){
 					pending.push_back(course_list[i]);
 				}
 			}
+			if (course_list.empty()){
+				std::cerr << "Error: no course list found\n";
+				return 1;
+			}
+
 			//checks if all courses required a prereq
 			if (pending.size() == course_list.size()){
-				std::cerr << "Error: invalid class list (all prereq courses)";
+				std::cerr << "Error: invalid class list (all prereq courses found)\n";
 				return 1;
 			}
 			cout << "pending: \n";
 			output_vector(pending);
-			std::vector<int> x;
-			x.clear();
-			cout << "vector size test: " << x.size();
+
+			//need to check for vector size
+			//std::vector<int> x;
+			//x.clear();
+			//cout << "Vector empty?: " << x.empty() << "\n";
 
 			//flag infinite
 			//checks to see if no action occurred
@@ -198,9 +212,57 @@ int main(int argc, char *argv[]){
 			//if final prereq, check for next pending
 			//if next pending is final course, check to see if pending size >= 1 and action != 0;
 			int action = 0;
-			while (isempty(pending) == false){
+			count = 0;
+			int current_size = pending.size();
+			if (output.empty() == true){
+				std::cerr << "Error: no classes without preque were found\n";
+				return 1;
+			}
+			int pop_flag = 0;
+			while(pending.empty() == false){
+				cout << "Pending is not empty \n";
 
-		//		if (action)
+				// iterates through each pending
+				while (count < current_size){
+					cout << "Current check: " << pending[count].output_name() << "\n";
+					//checks current count's prereq
+					cout << "How many loops in this check? " << pending[count].prereq_size() << "\n";
+					for (int x = 0; x < pending[count].prereq_size(); x++){
+						
+						//searches for output.
+						//if found, store in a vector position
+						for (int y = 0; y < output.size(); y++){
+							if (pending[count].top_prereq() == output[y]){
+								pending[count].remove_prereq(output[y]);
+								action=1;
+								cout << "Found " << output[y] << " !\n";
+								break;
+							}
+						}
+					}
+						//checks if pending has no prereq
+					if (pending[count].has_prereq() == false){
+						output.push_back(pending[count].output_name());
+						pop_flag++;
+					}
+					//}*/
+					count++;
+				}
+				if (pending.empty() == true and output.size() == course_list.size()){
+					break;
+				}
+				else if (action == 1 && pending.empty() == false){
+					current_size = current_size - pop_flag;
+					pop_flag = 0;
+					count=0;
+					action=0;
+
+				}
+				else{
+					std::cerr << "Error, an ineligible course found\n";
+					output_vector(output);
+					return 1;
+				}
 			}
 			cout << "Course to take: \n";
 			output_vector(output);
