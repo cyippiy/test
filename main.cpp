@@ -78,8 +78,28 @@ void output_vector(std::vector<course> & v){
 	}
 }
 
-//takes current element, swaps to back
+//takes current element, which is a course object, swaps to back
+//if only 3 or more, temp to 2nd last vector
 void swap_to_back(std::vector<course>& v,const int &x){
+	course temp;
+	if (v.size() >= 3){
+		v[x].output_name();
+		v[x] = v[v.size()-2];
+		v[v.size()-2] = v[v.size()-1];
+		v[v.size()-1] = temp;
+	}
+	else if (v.size() == 2){
+		if (x == 0){
+			temp = v[1];
+			v[1] = v[0];
+			v[0] = temp;
+		}
+	}
+	else{
+
+	}
+
+}
 	course temp = v[x];
 	v[x] = v[v.size()-1];
 	v[v.size()-1] = temp;
@@ -162,16 +182,6 @@ int main(int argc, char *argv[]){
 					output.push_back(course_list[i].output_name());
 				}
 				else{
-					//check top prereq
-					//
-
-					//for (int j = 0; j < output.size(); j++){
-					//	if (output[j] == course_list[i].top_prereq()){
-							
-					//		output.push_back(course_list[i].output_name());
-					//	}
-					//}
-
 					pending.push_back(course_list[i]);
 				}
 			}
@@ -219,6 +229,7 @@ int main(int argc, char *argv[]){
 				return 1;
 			}
 			int pop_flag = 0;
+			std::vector<int> pop_holder;
 			while(pending.empty() == false){
 				cout << "Pending is not empty \n";
 
@@ -240,13 +251,22 @@ int main(int argc, char *argv[]){
 							}
 						}
 					}
-						//checks if pending has no prereq
+					//checks if pending has no prereq
+					//stores into a vector of ints to be removed later
 					if (pending[count].has_prereq() == false){
+						cout << "Pushing " << pending[count].output_name() << " into output! \n";
 						output.push_back(pending[count].output_name());
-						pop_flag++;
+						pop_holder.push_back(count);
 					}
 					//}*/
 					count++;
+				}
+
+				//removes the class from the pending vector if 
+				if (pop_holder.isempty() == false){
+					for (int i = 0; i < pop_holder.size(); i++){
+						swap_to_back(pending,pop_holder[i]);
+					}
 				}
 				if (pending.empty() == true and output.size() == course_list.size()){
 					break;
