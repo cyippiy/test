@@ -1,6 +1,3 @@
-#ifndef __FUNCTIONS__
-#define __FUNCTIONS__
-
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -27,6 +24,7 @@ bool check_regex(const std::string & x){
 	}
 }
 
+//santizes input, only allowing
 void clean_string(std::string & x){
 	char chars[] = "()<>/\\[]\"";
 	for (unsigned int i = 0; i < strlen(chars); i++){
@@ -64,6 +62,7 @@ void load_prereq(const std::string & s, std::vector<std::string> & v){
 
 //outputs the vector
 void output_vector(std::vector<std::string> & v){
+	cout << "outputting vector! \n";
 	for (int i = 0; i < v.size(); i++){
 		cout << v[i] << "\n";
 	}
@@ -129,6 +128,57 @@ void json_to_string(const json & j, std::vector<course>& course_list){
 		v_temp.clear();
 	}
 }
+void merge(std::vector<std::string>& s,int low, int mid, int high){
+    int i = low;
+    int k = low;
+    int j = mid + 1;
+    unsigned int count = s.size();
+    std::vector<std::string> v;
+    v.resize(count);
+    while (i <= mid and j <= high){
+        if (s[i] < s[j]){
+            v[k] = s[i];
+            k++;
+            i++;
+        }
+        else{
+            v[k] = s[j];
+            k++;
+            j++;
+        }
+    }
+    while (i <= mid){
+        v[k] = s[i];
+        k++;
+        i++;
+    }
+    while (j <= high){
+        v[k] = s[j];
+        k++;
+        j++;
+    }
+    for (i = low; i < k; i++){
+        s[i] = v[i];
+    }
+}
 
+void mergesort(std::vector<std::string>& s, int low, int high){
+    int mid;
+    if (low < high){
+        mid=(low+high)/2;
+        mergesort(s,low,mid);
+        mergesort(s,mid+1,high);
+        merge(s,low,high,mid);
+	}
+}
 
-#endif
+void mergesort(std::vector<std::string>& s){
+	int x = 0;
+	int y = s.size();
+	mergesort(s,0,s.size()-1);
+}
+
+void check_duplicate(std::vector<std::string> s){
+
+}
+

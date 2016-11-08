@@ -103,8 +103,6 @@ int main(int argc, char *argv[]){
 
 			//cycles through the pending course list
 			while(pending.empty() == false){
-				cout << "Pending is not empty \n";
-
 				// iterates through each pending
 				while (count < current_size){
 					cout << "Current check: " << pending[count].output_name() << "\n\n";
@@ -160,7 +158,20 @@ int main(int argc, char *argv[]){
 
 			cout << "Course to take: \n";
 			output_vector(output);
-			
+			/*
+			cout << "\n\n";
+			std::vector<std::string> test;
+			test=output;
+			if (test[1] < test[0])
+			{
+				cout << "test " << test[1] << " wins\n";
+			}
+			else{
+				cout << "test "<< test[0] <<" wins\n";
+			}
+			mergesort(test);
+			output_vector(test);
+			*/
 		}	
 
 		//reads out classes
