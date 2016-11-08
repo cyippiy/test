@@ -15,7 +15,6 @@ public:
 	course(const std::string & n, const std::vector<std::string> & prereq );
 	course& operator=(const course & c);
 	bool operator==(const course& a);
-	std::string get_name();
 	void set_name(const std::string & n);
 	void add_prereq(const std::string & n);
 	void copy_prereq(const std::vector<std::string> & v, int i);
