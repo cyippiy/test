@@ -78,10 +78,21 @@ void output_vector(std::vector<course> & v){
 	}
 }
 
+void remove_from_pending(std::vector<course>& v, std::vector<int> x){
+
+
+}
+
 //takes current element, which is a course object, swaps to back
 //if only 3 or more, temp to 2nd last vector
-void swap_to_back(std::vector<course>& v,const int &x){
-	course temp;
+//flag is how many to remove
+void swap_to_back(std::vector<course>& v,const int &x, const int &flag){
+	course temp(v[x].output_name(),v[x].link_prereq());
+	
+	//if flag
+
+
+	/*
 	if (v.size() >= 3){
 		v[x].output_name();
 		v[x] = v[v.size()-2];
@@ -98,12 +109,28 @@ void swap_to_back(std::vector<course>& v,const int &x){
 	else{
 
 	}
-
-}
+	*/
+}/*
 	course temp = v[x];
 	v[x] = v[v.size()-1];
 	v[v.size()-1] = temp;
+*/
+
+//deletes
+	/*
+void erase_prereq(std::vector<course>& v,const std::vector<int>& p){
+	
+	std::vector<std::string> temp;
+
+	for (int i = 0; i < p.size(); i++){
+		temp.push_back(v[p[i]].ouput_name());
+	}
+	for (int i = 0; i < temp.size(); i++){
+		if()
+			v.erase()
+	}
 }
+*/
 
 int main(int argc, char *argv[]){
 	if (argc != 2){
@@ -236,6 +263,7 @@ int main(int argc, char *argv[]){
 				// iterates through each pending
 				while (count < current_size){
 					cout << "Current check: " << pending[count].output_name() << "\n";
+					pending[count].output_prereq();
 					//checks current count's prereq
 					cout << "How many loops in this check? " << pending[count].prereq_size() << "\n";
 					for (int x = 0; x < pending[count].prereq_size(); x++){
@@ -246,7 +274,7 @@ int main(int argc, char *argv[]){
 							if (pending[count].top_prereq() == output[y]){
 								pending[count].remove_prereq(output[y]);
 								action=1;
-								cout << "Found " << output[y] << " !\n";
+								cout << "Found " << output[y] << " ! Removed it\n";
 								break;
 							}
 						}
@@ -262,10 +290,12 @@ int main(int argc, char *argv[]){
 					count++;
 				}
 
-				//removes the class from the pending vector if 
-				if (pop_holder.isempty() == false){
+				//removes the class from the pending vector if  
+				//pops pending
+				if (pop_holder.empty() == false){
 					for (int i = 0; i < pop_holder.size(); i++){
 						swap_to_back(pending,pop_holder[i]);
+					//	pending.pop_back();
 					}
 				}
 				if (pending.empty() == true and output.size() == course_list.size()){
