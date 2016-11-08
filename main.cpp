@@ -108,6 +108,20 @@ void swap_to_back(std::vector<course>& v,const int &x){
 	v[v.size()-1] = temp;
 }
 
+void pop_pending(std::vector<course>& v, std::vector<int>& x){
+	std::vector<course> temp;
+	for (int i = 0; i < x.size(); i++){
+		temp.push_back(v[x[i]]);
+	}
+	for (int i = 0; i < temp.size(); i++){
+		for (int j = 0; j < v.size(); j++ )
+			if (temp[i] == v[j]){
+				v.erase(v.begin()+j);
+				break;
+			}
+	}
+}
+
 int main(int argc, char *argv[]){
 	if (argc != 2){
 		std::cerr << "Error: No argument provided.\n";
@@ -224,14 +238,14 @@ int main(int argc, char *argv[]){
 				std::cerr << "Error: no classes without preque were found\n";
 				return 1;
 			}
-			int pop_flag = 0;
 			std::vector<int> pop_holder;
+			cout << "\n\n\n\n";
 			while(pending.empty() == false){
 				cout << "Pending is not empty \n";
 
 				// iterates through each pending
 				while (count < current_size){
-					cout << "Current check: " << pending[count].output_name() << "\n";
+					cout << "Current check: " << pending[count].output_name() << "\n\n";
 					pending[count].output_prereq();
 					//checks current count's prereq
 					cout << "How many loops in this check? " << pending[count].prereq_size() << "\n";
@@ -243,7 +257,7 @@ int main(int argc, char *argv[]){
 							if (pending[count].top_prereq() == output[y]){
 								pending[count].remove_prereq(output[y]);
 								action=1;
-								cout << "Found " << output[y] << " ! Removed it\n";
+								cout << "Found " << output[y] << " ! Removed it\n\n";
 								break;
 							}
 						}
@@ -251,7 +265,7 @@ int main(int argc, char *argv[]){
 					//checks if pending has no prereq
 					//stores into a vector of ints to be removed later
 					if (pending[count].has_prereq() == false){
-						cout << "Pushing " << pending[count].output_name() << " into output! \n";
+						cout << "Pushing " << pending[count].output_name() << " into output! \n\n\n\n\n";
 						output.push_back(pending[count].output_name());
 						pop_holder.push_back(count);
 					}
@@ -262,16 +276,15 @@ int main(int argc, char *argv[]){
 				//removes the class from the pending vector if  
 				//pops pending
 				if (pop_holder.empty() == false){
-					for (int i = 0; i < pop_holder.size(); i++){
-						swap_to_back(pending,pop_holder[i]);
-					//	pending.pop_back();
-					}
+					pop_pending(pending,pop_holder);
 				}
+
+				//checks if no more pending, and all output is found
 				if (pending.empty() == true and output.size() == course_list.size()){
 					break;
 				}
 				else if (action == 1 && pending.empty() == false){
-					current_size = current_size - pop_flag;
+					current_size = pending.size();
 					pop_flag = 0;
 					count=0;
 					action=0;

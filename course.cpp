@@ -28,6 +28,9 @@ course& course::operator=(const course& c){
 	return *this;
 }
 
+bool course::operator==(const course& a){
+	return (a.name == this->name and a.prereq == this->prereq and a.prereq_count == this->prereq_count);
+}
 
 void course::set_prereq(const std::vector<std::string>& n){
 	prereq = n;
