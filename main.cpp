@@ -6,121 +6,13 @@
 #include <regex>
 #include "course.h"
 #include <unordered_map>
+#include "functions.cpp"
 
 using json = nlohmann::json;
 using std::cout;
 
 
-// checks regex if file is an array of JSON
-// regex: \\[(,*\\s\\s*\\{\\s+\"name\":\\s*\"(\\w+\\s*\\w)+\",\\s*\"prerequisites\":\\s*\\[(\"(\\w+\\s*\\w)+\",*\\s*)*\\]\\s*\\}\\s*)+\\]
-// input: in string of file
-// output: returns true or false
-bool check_regex(const std::string & x){
-	std::regex test("\\[(,*\\s\\s*\\{\\s+\"name\":\\s*\"(\\w+\\s*\\w)+\",\\s*\"prerequisites\":\\s*\\[(\"(\\w+\\s*\\w)+\",*\\s*)*\\]\\s*\\}\\s*)+\\]");
-	//cout << x << "\n";
-	std::smatch match;
-	if (std::regex_match(x,match,test) && match.size() > 0){
-		cout << "this passed check_regex!\n";
-		return true;
-	}
-	else{
-		cout << "failed check_regex!\n";
-		return false;
-	}
-}
 
-//santitizes input to only characters and whitespace
-void clean_string(std::string & x){
-	char chars[] = "()<>[]\"";
-	for (unsigned int i = 0; i < strlen(chars); i++){
-		x.erase (std::remove(x.begin(),x.end(),chars[i]), x.end());
-	}
-}
-
-//checks first index to see if it's just whitespace
-bool isempty(const std::vector<std::string> & v){
-	return std::all_of(v[0].begin(),v[0].end(),isspace);
-}
-
-bool isempty(const std::vector<course>& v){
-	if (v.size() == 0){
-		return true;
-	}
-	else{
-		return false;
-	}
-}
-
-void load_prereq(const std::string & s, std::vector<std::string> & v){
-	std::string delimiter = ",";
-	size_t pos = 0;
-	std::string test = s;
-	std::string token;
-	while ((pos = test.find(delimiter)) != std::string::npos){
-		token = test.substr(0, pos);
-		v.push_back(token);
-		test.erase(0, pos + delimiter.length());
-	}
-	v.push_back(test);
-}
-
-//outputs the vector
-void output_vector(std::vector<std::string> & v){
-	for (int i = 0; i < v.size(); i++){
-		cout << v[i] << "\n";
-	}
-}
-
-void output_vector(std::vector<course> & v){
-	for (int i = 0; i < v.size(); i++){
-			cout << v[i].output_name() << "\n";
-	}
-}
-
-//takes current element, which is a course object, swaps to back
-//if only 3 or more, temp to 2nd last vector
-void swap_to_back(std::vector<course>& v,const int &x){
-	//course temp(v[x].output_name(),v[x].link_prereq());
-//	temp.set_name(v[x].output_name());
-//	temp.set_prereq(v[x].link_prereq());
-
-	/*
-	if (v.size() >= 3){
-		v[x].output_name();
-		v[x] = v[v.size()-2];
-		v[v.size()-2] = v[v.size()-1];
-		v[v.size()-1] = temp;
-	}
-	else if (v.size() == 2){
-		if (x == 0){
-			temp = v[1];
-			v[1] = v[0];
-			v[0] = temp;
-		}
-	}
-	else{
-
-	}
-
-}*/
-	course temp = v[x];
-	v[x] = v[v.size()-1];
-	v[v.size()-1] = temp;
-}
-
-void pop_pending(std::vector<course>& v, std::vector<int>& x){
-	std::vector<course> temp;
-	for (int i = 0; i < x.size(); i++){
-		temp.push_back(v[x[i]]);
-	}
-	for (int i = 0; i < temp.size(); i++){
-		for (int j = 0; j < v.size(); j++ )
-			if (temp[i] == v[j]){
-				v.erase(v.begin()+j);
-				break;
-			}
-	}
-}
 
 int main(int argc, char *argv[]){
 	if (argc != 2){
@@ -137,65 +29,34 @@ int main(int argc, char *argv[]){
 		else{
 			//reads file and stores into a string
 			std::string json_content {std::istreambuf_iterator<char>(json_file),std::istreambuf_iterator<char>()};
+
 			json j;
+			std::vector<course> course_list;
+			int count;
+			course course_var;
+
 			try{
 				j = json::parse(json_content);	
 			}
 			catch (const std::invalid_argument& ia){
-				std::cerr << "Error: Invalid JSON file\n";
+				std::cerr << "Error: Argument is invalid JSON file\n";
 				return 1;
 			}
-		
-			//checks if json is valid
-			if (!check_regex(json_content)){
-				std::cerr << "Error: Bad class file\n";
-				return 1;
-			}
-			cout << "Size of Json array: " << j.size() << "\n";
-			std::vector<course> course_list;
-			std::string name_var;
-			std::string p;
-			std::vector<std::string> v;
-			int count;
 
-			course course_var;
-			//takes in a json object
-			//parses through each array element
-			//strips the name and preque
-			for (int i = 0; i < j.size(); i++){
-				auto json_var = j[i].get<std::unordered_map<std::string, json>>();
-				name_var = json_var["name"];
-				clean_string(name_var);
-				p = json_var["prerequisites"].dump();
-				clean_string(p);
-				cout << "name: " << name_var << "\n" << "prerequisites: "<< p << "\n";
-				load_prereq(p,v);
-				if (isempty(v)){
-					count = 0;
-					course_var.copy_prereq(v,0);
-				}
-				else{
-					count = v.size();
-					course_var.copy_prereq(v,count);
-				}
-				cout << count << "\n";
-				course_var.set_name(name_var);
-				course_list.push_back(course_var);
-				v.clear();
+			cout << "Size of Json array: " << j.size() << "\n";
+			try{		
+				json_to_string(j,course_list);
 			}
-			/*
-			for (unsigned int i = 0; i < course_list.size(); i++){
-				cout << "Name: " << course_list[i].output_name() << "\n";
-				course_list[i].output_prereq();
-			}*/
+			catch ( ... ){
+				std::cerr << "Error: converting JSON to string (bad syntax for file) \n\n";
+				return 1;
+			}
 			std::vector<std::string> output;
 			std::vector<course> pending;
 			output.clear();
-			//cout << course_list[1].get << "\n";
-			//is json array empty?
+
 			for (int i = 0; i < course_list.size(); i++){
 				if (course_list[i].has_prereq() == false){
-					//cout << i << "\n";
 					output.push_back(course_list[i].output_name());
 				}
 				else{
@@ -214,7 +75,6 @@ int main(int argc, char *argv[]){
 			}
 			cout << "pending: \n";
 			output_vector(pending);
-			//cout << "Vector empty?: " << x.empty() << "\n";
 
 			//is pending empty?
 			//no
@@ -240,6 +100,8 @@ int main(int argc, char *argv[]){
 			}
 			std::vector<int> pop_holder;
 			cout << "\n\n\n\n";
+
+			//cycles through the pending course list
 			while(pending.empty() == false){
 				cout << "Pending is not empty \n";
 
@@ -249,10 +111,12 @@ int main(int argc, char *argv[]){
 					pending[count].output_prereq();
 					//checks current count's prereq
 					cout << "How many loops in this check? " << pending[count].prereq_size() << "\n";
+
+					//cycles through each prereq currently not found in output vector
 					for (int x = 0; x < pending[count].prereq_size(); x++){
 						
 						//searches for output.
-						//if found, store in a vector position
+						//if found, store in a vector position, and removes from prereq
 						for (int y = 0; y < output.size(); y++){
 							if (pending[count].top_prereq() == output[y]){
 								pending[count].remove_prereq(output[y]);
@@ -265,7 +129,7 @@ int main(int argc, char *argv[]){
 					//checks if pending has no prereq
 					//stores into a vector of ints to be removed later
 					if (pending[count].has_prereq() == false){
-						cout << "Pushing " << pending[count].output_name() << " into output! \n\n\n\n\n";
+						cout << "Pushing " << pending[count].output_name() << " into output! \n\n";
 						output.push_back(pending[count].output_name());
 						pop_holder.push_back(count);
 					}
@@ -279,18 +143,14 @@ int main(int argc, char *argv[]){
 					pop_pending(pending,pop_holder);
 				}
 
-				//checks if no more pending, and all output is found
-				if (pending.empty() == true and output.size() == course_list.size()){
-					break;
-				}
-				else if (action == 1 && pending.empty() == false){
+				//there has been an action and pending isn't empty yet
+				if (action == 1 && pending.empty() == false){
 					current_size = pending.size();
-					pop_flag = 0;
 					count=0;
 					action=0;
 
 				}
-				else{
+				else if (action == 0 && pending.empty() == false){
 					//should not get here
 					std::cerr << "Error, an ineligible course found\n";
 					output_vector(output);

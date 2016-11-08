@@ -37,10 +37,6 @@ void course::set_prereq(const std::vector<std::string>& n){
 	prereq_count = n.size();
 }
 
-std::string course::get_name(){
-	return name;
-}
-
 void course::set_name(const std::string & n){
 	name = n;
 }
