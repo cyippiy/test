@@ -78,14 +78,30 @@ void output_vector(std::vector<course> & v){
 	}
 }
 
+void remove_from_pending(std::vector<course>& v, std::vector<int> x){
+
+
+}
+
 //takes current element, which is a course object, swaps to back
 //if only 3 or more, temp to 2nd last vector
+<<<<<<< HEAD
 void swap_to_back(std::vector<course>& v,const int &x){
 	course temp(v[x].output_name(),v[x].link_prereq());
 //	temp.set_name(v[x].output_name());
 //	temp.set_prereq(v[x].link_prereq());
 
 	
+=======
+//flag is how many to remove
+void swap_to_back(std::vector<course>& v,const int &x, const int &flag){
+	course temp(v[x].output_name(),v[x].link_prereq());
+	
+	//if flag
+
+
+	/*
+>>>>>>> version-2
 	if (v.size() >= 3){
 		v[x].output_name();
 		v[x] = v[v.size()-2];
@@ -102,12 +118,35 @@ void swap_to_back(std::vector<course>& v,const int &x){
 	else{
 
 	}
+<<<<<<< HEAD
 
+=======
+	*/
+>>>>>>> version-2
 }/*
 	course temp = v[x];
 	v[x] = v[v.size()-1];
 	v[v.size()-1] = temp;
 */
+<<<<<<< HEAD
+=======
+
+//deletes
+	/*
+void erase_prereq(std::vector<course>& v,const std::vector<int>& p){
+	
+	std::vector<std::string> temp;
+
+	for (int i = 0; i < p.size(); i++){
+		temp.push_back(v[p[i]].ouput_name());
+	}
+	for (int i = 0; i < temp.size(); i++){
+		if()
+			v.erase()
+	}
+}
+*/
+>>>>>>> version-2
 
 int main(int argc, char *argv[]){
 	if (argc != 2){
