@@ -20,13 +20,14 @@ course::course(const std::string & n,const std::vector<std::string> & p){
 	prereq = p;
 	prereq_count = prereq.size();
 }
-/*
-course course::operator=(const course& c){
+
+course& course::operator=(const course& c){
 	name = c.name;
 	prereq = c.prereq;
 	prereq_count = c.prereq_count;
+	return *this;
 }
-*/
+
 
 void course::set_prereq(const std::vector<std::string>& n){
 	prereq = n;

@@ -13,7 +13,7 @@ public:
 	course();
 	course(const std::string & n);
 	course(const std::string & n, const std::vector<std::string> & prereq );
-	//course operator=(const course & c);
+	course& operator=(const course & c);
 	std::string get_name();
 	void set_name(const std::string & n);
 	void add_prereq(const std::string & n);
