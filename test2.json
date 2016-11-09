@@ -1,0 +1,38 @@
+[
+    {
+        "name": "badassmother",
+        "prerequisites": ["Differential Equations", "Intro to Physics","Scientific Thinking","Calculus"]
+    },
+    {
+        "name": "Calculus",
+        "prerequisites": []
+    },
+    {
+        "name": "Scientific Thinking",
+        "prerequisites": []
+    },
+    {
+        "name": "Differential Equations",
+        "prerequisites": ["Calculus"]
+    },
+    {
+        "name": "Intro to Physics",
+        "prerequisites": ["Scientific Thinking"]
+    },
+    {
+        "name": "Relativity",
+        "prerequisites": ["Differential Equations", "Intro to Physics"]
+    },
+    {
+        "name": "badassmother",
+        "prerequisites": ["Differential Equations", "Intro to Physics","Scientific Thinking","Calculus"]
+    },
+        {
+        "name": "Intro to Physics",
+        "prerequisites": ["Scientific Thinking"]
+    },
+    {
+        "name": "Relativity",
+        "prerequisites": ["Differential Equations", "Intro to Physics"]
+    }
+]

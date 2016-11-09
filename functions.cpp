@@ -6,10 +6,12 @@
 #include <regex>
 #include "course.h"
 #include <unordered_map>
+#include <algorithm> 
 
 using json = nlohmann::json;
 using std::cout;
 
+//didn't use this. tried using this to parse regex but C++11 doesn't like
 bool check_regex(const std::string & x){
 	std::string format = "\\[(,*\\s\\s*\\{\\s+\"name\":\\s*\"(\\w+\\s*\\w)+\",\\s*\"prerequisites\":\\s*\\[(\"(\\w+\\s*\\w)+\",*\\s*)*\\]\\s*\\}\\s*)+\\]";
 	std::regex test(format);
@@ -62,7 +64,7 @@ void load_prereq(const std::string & s, std::vector<std::string> & v){
 
 //outputs the vector
 void output_vector(std::vector<std::string> & v){
-	cout << "outputting vector! \n";
+	//cout << "outputting vector! \n";
 	for (int i = 0; i < v.size(); i++){
 		cout << v[i] << "\n";
 	}
@@ -102,6 +104,8 @@ void pop_pending(std::vector<course>& v, std::vector<int>& x){
 
 
 //converts the JSON into string
+//takes in json
+//converts the json into a vector of courses
 void json_to_string(const json & j, std::vector<course>& course_list){
 	std::string name;
 	std::string prereq;
@@ -128,57 +132,49 @@ void json_to_string(const json & j, std::vector<course>& course_list){
 		v_temp.clear();
 	}
 }
-void merge(std::vector<std::string>& s,int low, int mid, int high){
-    int i = low;
-    int k = low;
-    int j = mid + 1;
-    unsigned int count = s.size();
-    std::vector<std::string> v;
-    v.resize(count);
-    while (i <= mid and j <= high){
-        if (s[i] < s[j]){
-            v[k] = s[i];
-            k++;
-            i++;
-        }
-        else{
-            v[k] = s[j];
-            k++;
-            j++;
-        }
-    }
-    while (i <= mid){
-        v[k] = s[i];
-        k++;
-        i++;
-    }
-    while (j <= high){
-        v[k] = s[j];
-        k++;
-        j++;
-    }
-    for (i = low; i < k; i++){
-        s[i] = v[i];
-    }
-}
 
-void mergesort(std::vector<std::string>& s, int low, int high){
-    int mid;
-    if (low < high){
-        mid=(low+high)/2;
-        mergesort(s,low,mid);
-        mergesort(s,mid+1,high);
-        merge(s,low,high,mid);
+//sorts the list into a temporary so it's easier to find the duplicate
+//modifies output to remove any duplicate courses
+void delete_duplicate(std::vector<std::string>& s, std::vector<std::string>& output){
+	std::sort(s.begin(),s.end());
+	int counter = 0;
+	int size = s.size();
+	int max_size = s.size();
+	bool flag_delete= 0;
+	bool complete = 0;
+	std::vector<std::string> store;
+	while(complete == 0){
+		if (counter < size){
+			for(int i = counter; i < size-1; i++){
+				if (s[i] == s[i+1]){
+					cout << "found dupe: " << s[i] << "\n";
+					store.push_back(s[i]);
+					s.erase(s.begin()+i);
+					flag_delete = 1;
+					size--;
+					counter = i;
+					break;
+				}
+			}
+			if (flag_delete == 1){
+				complete = 0;
+				flag_delete = 0;
+			}
+			else{
+				complete = 1;
+			}
+		}
+		else{
+			complete = 1;
+		}
 	}
-}
-
-void mergesort(std::vector<std::string>& s){
-	int x = 0;
-	int y = s.size();
-	mergesort(s,0,s.size()-1);
-}
-
-void check_duplicate(std::vector<std::string> s){
-
+	for (int i = 0; i < store.size(); i++){
+		for (int j = 0; j < output.size(); j++){
+			if (store[i] == output[j]){
+				output.erase(output.begin()+j);
+				break;
+			}
+		}
+	}
 }
 
