@@ -9,7 +9,7 @@
     },
     {
         "name": "Scientific Thinking",
-        "prerequisites": []
+        "prerequisites": ["whatever"]
     },
     {
         "name": "Differential Equations",
