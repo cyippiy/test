@@ -135,7 +135,7 @@ void json_to_string(const json & j, std::vector<course>& course_list){
 }
 
 //takes a temp vector list of courses, the vector of no prereq course, and vector of pending course
-//will sort the temp vector... O(nlogn)
+//will sort the temp vector first to find dupes easier
 //checks if it detects a duplicate entry
 //removes it from each respective vector
 void delete_duplicate(std::vector<std::string>& s,std::vector<std::string>& x, std::vector<course>& c){
@@ -215,22 +215,15 @@ void check_pending(std::vector<course>& pending,std::vector<std::string>& output
 
 	while(pending.empty() == false){
 		// iterates through each pending
-		while (count < current_size){
-			//checks current count's prereq
-		
-			//cycles through each prereq currently not found in output vector
-			for (int x = 0; x < pending[count].prereq_size(); x++){
-					
-				//searches for output.
-				//if found, store in a vector position, and removes from prereq
-				for (int y = 0; y < output.size(); y++){
-					if (pending[count].top_prereq() == output[y]){							
-						pending[count].remove_prereq(output[y]);
-						action=1;
-						break;
-					}
-				}
-			}
+		while (count < current_size){	
+			//searches for output.
+			//if found, store in a vector position, and removes from prereq
+			for (int y = 0; y < output.size(); y++){
+				if (pending[count].top_prereq() == output[y]){							
+					pending[count].remove_prereq(output[y]);
+					action=1;
+					break;
+			}				}
 			//checks if pending has no prereq
 			//stores into a vector of ints to be removed later
 			if (pending[count].has_prereq() == false){
