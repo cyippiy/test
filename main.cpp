@@ -7,6 +7,7 @@
 #include "course.h"
 #include <unordered_map>
 #include "functions.cpp"
+#include <algorithm>
 
 using json = nlohmann::json;
 using std::cout;
@@ -76,6 +77,17 @@ int main(int argc, char *argv[]){
 			cout << "pending: \n";
 			output_vector(pending);
 
+			int action = 0;
+			count = 0;
+			int current_size = pending.size();
+			if (output.empty() == true){
+				std::cerr << "Error: no classes without preque were found\n";
+				return 1;
+			}
+			std::vector<int> pop_holder;
+		//	cout << "\n\n\n\n";
+
+
 			//is pending empty?
 			//no
 			//starts with top element
@@ -91,15 +103,6 @@ int main(int argc, char *argv[]){
 			//if no match, check for next prereq
 			//if final prereq, check for next pending
 			//if next pending is final course, check to see if pending size >= 1 and action != 0;
-			int action = 0;
-			count = 0;
-			int current_size = pending.size();
-			if (output.empty() == true){
-				std::cerr << "Error: no classes without preque were found\n";
-				return 1;
-			}
-			std::vector<int> pop_holder;
-			cout << "\n\n\n\n";
 
 			//cycles through the pending course list
 			while(pending.empty() == false){
@@ -108,7 +111,7 @@ int main(int argc, char *argv[]){
 					cout << "Current check: " << pending[count].output_name() << "\n\n";
 					pending[count].output_prereq();
 					//checks current count's prereq
-					cout << "How many loops in this check? " << pending[count].prereq_size() << "\n";
+					//cout << "How many loops in this check? " << pending[count].prereq_size() << "\n";
 
 					//cycles through each prereq currently not found in output vector
 					for (int x = 0; x < pending[count].prereq_size(); x++){
@@ -141,37 +144,41 @@ int main(int argc, char *argv[]){
 					pop_pending(pending,pop_holder);
 				}
 
-				//there has been an action and pending isn't empty yet
+				//there has been an action and pending isn't empty yet. reset values
 				if (action == 1 && pending.empty() == false){
 					current_size = pending.size();
 					count=0;
 					action=0;
 
 				}
+				//no action was done, infinite loop detected
 				else if (action == 0 && pending.empty() == false){
-					//should not get here
 					std::cerr << "Error, an ineligible course found\n";
 					output_vector(output);
 					return 1;
 				}
 			}
 
+
 			cout << "Course to take: \n";
-			output_vector(output);
-			/*
+		//	output_vector(output);
+
+			
 			cout << "\n\n";
-			std::vector<std::string> test;
-			test=output;
-			if (test[1] < test[0])
+			std::vector<std::string> test=output;
+			/*if (test[1] < test[0])
 			{
 				cout << "test " << test[1] << " wins\n";
 			}
 			else{
 				cout << "test "<< test[0] <<" wins\n";
-			}
-			mergesort(test);
-			output_vector(test);
 			*/
+			//mergesort(test);
+			delete_duplicate(test,output);
+			cout << "Course to take: \n";
+			output_vector(test);
+			
+
 		}	
 
 		//reads out classes
