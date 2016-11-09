@@ -33,8 +33,6 @@ int main(int argc, char *argv[]){
 
 			json j;
 			std::vector<course> course_list;
-			int count;
-			course course_var;
 			std::vector<std::string> temp;
 			try{
 				j = json::parse(json_content);	
@@ -44,7 +42,6 @@ int main(int argc, char *argv[]){
 				return 1;
 			}
 
-			// cout << "Size of Json array: " << j.size() << "\n";
 			try{		
 				json_to_string(j,course_list);
 			}
@@ -79,7 +76,7 @@ int main(int argc, char *argv[]){
 				std::cerr << "Error, an ineligible course found\n";
 				return 1;
 			}
-			cout << "\nCourse to take: \n";
+			cout << "\nCourses to take: \n";
 			output_vector(output);
 		}	
 	}
